@@ -1,6 +1,9 @@
+// Aqruivo inicial para organizar as estruturas
+// As struct em si passaram para estruturas.h
+
 #include <stdio.h>
 
-struct Posicao
+/*struct Posicao
 {
 	int linha;
 	int coluna;
@@ -23,4 +26,4 @@ struct Jogador
 	Navio navios[6];
 	int naviosEmJogo;
 	int jogadas = 0;
-};
+};*/

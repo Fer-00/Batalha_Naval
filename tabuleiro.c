@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "estruturas.h"
 
 void inicializaTabuleiro(int tab[10][10])
 {
@@ -7,98 +8,93 @@ void inicializaTabuleiro(int tab[10][10])
 			tab[i][j] = 0;
 }
 
+void mostraTabuleiro(int tab[10][10])
+{
+    printf("   0 1 2 3 4 5 6 7 8 9\n");
+    for (int i = 0; i < 10; i++)
+    {
+        printf("%d  ", i);
+        for (int j = 0; j < 10; j++)
+        {
+            printf("%d ", tab[i][j]);
+        }
+        printf("\n");
+    }
+}
+
 int checarTiro(int tab[10][10],int x, int y)
 {
 	for (int i = 0; i < 10; i++)
 		for (int j = 0; j < 10; j++)
-			if (tab[i][j] != 0 && tab[10][10] > 0 && i == x && j == y);
+			if (tab[i][j] > 0 && i == x && j == y)
 				return 1;
 	return 0;
 }
 
-int posicionarNavio(int tab[10][10],int posI, char posF, int tam, int player)
+int posicionarNavio(int tab[10][10],Posicao posI, Posicao posF, int tam, int player)
 {
-	int x = posF[0] - posI[0]; //Se for positivo, tá indo para a diretia, se não, esquerda.
-	int y = posF[1] - posI[1]; //Se for positivo, rá indo para cima, se não, baixo.
-	if (posicaoPossivel(tab,posI,x,y,tam))
+	int x = posI.linha;
+	int y = posI.coluna;
+	int dx  = posF.linha - posI.linha; //Se for positivo, tá indo para a diretia, se não, esquerda.
+	int dy = posF.coluna - posI.coluna; //Se for positivo, rá indo para cima, se não, baixo.
+
+	// Normaliza direção em -1(sentido negativo), 0(eixo travado) ou 1(sentido positito)
+	if (dx != 0) dx = (dx > 0 ? 1 : -1);
+	if (dy != 0) dy = (dy > 0 ? 1 : -1);
+
+	if (posicaoPossivel(tab,posI,dx,dy,tam))
 	{
-		for (int i = 0; i < 10; i++)
+		for (int k = 0; k < tam; k++)
 		{
-			for (int j = 0; j < 10; j++)
-			{
-				if (i == posI[0] && j == posI[1])
-				{
-					for (int k = 0; k < tam; k++)
-					{
-						if (x > 0 && y == 0)
-							tab[i+k][j] = player;
-						else if (x < 0 && y == 0)
-							tab[i-k][j] = player;
-						else if (x == 0 && y > 0)
-							tab[i][j+k] = player;
-						else if (x == 0 && y < 0)
-							tab[i][j-K] = player;
-						else
-							continue;
-					}
-					return 1;
-				}
-			}
+			x += k * dx;
+			y += k * dy;
+			tab[x][y] = player;
 		}
+			return 1;
 	}
 	else
 		return 0;
 }
 
-int posicaoPossivel(int tab[10][10],int posI,int x, int y, int tam)
-{
-	if (posI[0] + x >= 10 or posI[1] + y >= 10 or posI[0] - x < 0 or posI[1] - y < 0)
+int posicaoPossivel(int tab[10][10],Posicao posI,int dx, int dy, int tam)
+{	
+	int x = posI.linha;
+	int y = posI.coluna;
+
+	if (x >= 10 || y >= 10 || x < 0 || y < 0)
 		return 0;
-	for (int i = 0; i < tam; i++)
-	{
-		for (int j = 0; j < tam; j++)
-		{
-			for (int k = 0; k < tam; k++)
-			{
-				if (x > 0 && y == 0)
-					if (tab[i+k][j] != 0)
-						return 0;
-				else if (x < 0 && y == 0)
-					if (tab[i-k][j] != 0)
-						return 0;
-				else if (x == 0 && y > 0)
-					if (tab[i][j+k] != 0)
-						return 0;
-				else if (x == 0 && y < 0)
-					if (tab[i][j-k] != 0)
-						return 0;
-				else
-					continue;
-			}
-		}
-	}
-	return 1;
+
+    for (int k = 0; k < tam; k++)
+    {
+        x += k * dx;
+        y += k * dy;
+
+        if (x < 0 || x >= 10 || y < 0 || y >= 10)
+            return 0;
+
+        if (tab[x][y] != 0)
+            return 0;
+    }
+
+    return 1;
 }
 
-int checarNavio(Navio navio)
+int checarNavio(Navio *navio)
 {
-	navio.acertos += 1;
-	if (acertos == tam)
+	navio->acertos += 1;
+	if (navio->acertos == tam)
 		return 1;
 	return 0;
 }
 
-int tiro(int tab[10][10], int x, int y, int player)
+int tiro(int tab[10][10], Posicao t, int player)
 {
-	if (tab[x][y] != 0)
-		return 2;
-	else if (tab[x][y] > 0 && tab[x][y] != player)
-	{
-		tab[x][y] = 0;
-		return 1;
-	}
-	else if (tab[x][y] > 0 && tab[x][y] == player)
+	if (tab[t.linha][t.coluna] == 0)
 		return 3;
+	else if (tab[t.linha][t.coluna] < 0)
+		return 1;
+	else if (tab[t.linha][t.coluna] > 0 && tab[t.linha][t.coluna] == player)
+		return player;
 	else
 		return 0;
 }
