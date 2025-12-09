@@ -12,7 +12,10 @@ int posicaoPossivel(int tab[10][10], Posicao posI, int dx, int dy, int tam);
 // Posiciona navio no tabuleiro se possível
 int posicionarNavio(int tab[10][10], Posicao posI, Posicao posF, int tam, int player);
 
-// Opcional: exibir tabuleiro
 void mostraTabuleiro(int tab[10][10]);
+
+int checarNavio(Navio *navio);
+
+int tiro(int tab[10][10], Posicao t, int player);
 
 #endif

@@ -12,19 +12,20 @@ void turno(Jogador *atacante, Jogador *defensor, int tab[10][10])
 
     if (tiro.linha < 0 || tiro.linha >= 10 || tiro.coluna < 0 || tiro.coluna >= 10)
     {
+        printf("Tiro fora do tabuleiro! Turno perdido!\n");
         return;
     }
 
-    jogada = jogada(tab,tiro,atacante->id);
+    int jogar = jogada(tab,atacante,tiro);
     
-    if (jogada == 3)
-        printf("Tiro fora do tabuleiro! Turno perdido.\n");
+    if (jogar == 3)
+        printf("Tiro na água! Turno perdido.\n");
 
-    else if(jogada <= 0)
+    else if(jogar == 5)
     {
         printf("Local já acertado!\nTurno perdido\n");
     }
-    else if (jogada == defensor->id)
+    else if (jogar == defensor->id)
     {
         printf("Acertou um navio!\n");
 
@@ -44,7 +45,7 @@ void turno(Jogador *atacante, Jogador *defensor, int tab[10][10])
                 int x = n->posI.linha + k * dx;
                 int y = n->posI.coluna + k * dy;
 
-                if (x == linha && y == coluna)
+                if (x == tiro.linha && y == tiro.coluna)
                 {
                     if (checarNavio(n))
                     {
@@ -56,6 +57,8 @@ void turno(Jogador *atacante, Jogador *defensor, int tab[10][10])
             }
         }
     }
+    else if(jogar == 4)
+        printf("Atirou no seu próprio navio\n");
     else
         printf("Erro inesperado no tabuleiro.\n");
 }
@@ -82,7 +85,6 @@ void iniciarJogo()
     printf("=== Batalha Naval ===\n\n");
 
     printf("Nome do Jogador 1: ");
-    getchar();    // limpa buffer do scanf anterior
     getNome(&j1);
     j1.id = 1;
 

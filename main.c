@@ -15,6 +15,7 @@ void pausar()
 {
     printf("\nPressione ENTER para continuar...");
     getchar();
+    getchar();
 }
 
 void mostrarRegras()

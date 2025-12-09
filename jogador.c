@@ -3,29 +3,55 @@
 #include "estruturas.h"
 #include "tabuleiro.h"
 
-void nome(Jogador *jogador)
+void getNome(Jogador *jogador)
 {
 	printf("Nome do jogador:\n");
-	fgets(j.nome, 50, stdin);
-	j.nome[strlen(j.nome)] = '\0';
+	fgets(jogador->nome, 50, stdin);
+    jogador->nome[strcspn(jogador->nome, "\n")] = 0; // remove \n
 }
 
-int jogada(Jogador *jogador, Posicao pos)
+int jogada(int tab[10][10], Jogador *jogador, Posicao pos) 
 {
-	//passar posição e player;
-	//várias funções no tabuleiro,checar necessidade de todas
 
-	jogador->jogadas++;
+    int x = pos.linha;
+    int y = pos.coluna;
 
+    jogador->jogadas++;
+
+    int aux = tiro(tab,pos,jogador->id);
+
+    // tiro na água
+    if (aux == 3) {
+        tab[x][y] = -1;
+        return 3;
+    }
+
+    // já acertado antes
+    else if (aux == 5)
+        return 5;
+
+    // acertou navio
+    else if (aux != jogador->id)
+    {
+    	tab[x][y] = -2;
+	    return aux;
+    }
+    // acertou seu próprio navio
+	else if (aux == jogador->id)
+		return 4;
+	else
+		return 12;
 }
 
-Posicao pegaJogada();
+Posicao pegaJogada()
+{
 	Posicao tiro;
 	printf("Linha de tiro:\n");
 	scanf("%d",&tiro.linha);
 	printf("Coluna de tiro:\n");
 	scanf("%d",&tiro.coluna);
 	return tiro;
+}
 
 int navios(Jogador *jogador, int tab[10][10])
 {
@@ -44,7 +70,7 @@ int navios(Jogador *jogador, int tab[10][10])
 		printf("Y final:\n");
 		scanf("%d",&posF.coluna);
 
-		if (!posicionarNavio(tab,posI,posF,tamanhos[i],jogador.player))
+		if (!posicionarNavio(tab,posI,posF,tamanhos[i],jogador->id))
 		{
 			printf("Posição inválida, tente novamente:\n");
 			i--;

@@ -4,15 +4,18 @@
 #include "estruturas.h"
 
 // Lê o nome do jogador e armazena no struct
-void getNome(Jogador *j);
+void getNome(Jogador *jogador);
 
 // Pede uma jogada (linha, coluna)
 Posicao pegaJogada();
 
+
+int jogada(int tab[10][10],Jogador *jogador, Posicao pos);
+
 // Posiciona todos os navios do jogador
-int navios(Jogador *j, int tab[10][10]);
+int navios(Jogador *jogador, int tab[10][10]);
 
 // Verifica se perdeu (nenhum navio restante)
-int perdeu(Jogador *j);
+int perdeu(Jogador *jogador);
 
 #endif
